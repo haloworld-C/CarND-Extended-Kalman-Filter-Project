@@ -63,6 +63,19 @@ class KalmanFilter {
 
   // measurement covariance matrix
   Eigen::MatrixXd R_;
+
+  // statement middle matrix
+  Eigen::VectorXd y_;
+  Eigen::MatrixXd H_t;  //H's tranpose in update()
+  Eigen::MatrixXd H_L;  //H in ekf_update()
+  Eigen::MatrixXd H_lt; 
+  Eigen::MatrixXd S_; 
+  Eigen::MatrixXd S_i;
+  Eigen::MatrixXd K_;
+  Eigen::MatrixXd KH;  
+  Eigen::MatrixXd I_; 
+
+
 };
 
 #endif // KALMAN_FILTER_H_

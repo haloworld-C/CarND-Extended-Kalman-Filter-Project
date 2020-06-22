@@ -108,7 +108,14 @@ int main() {
           ground_truth.push_back(gt_values);
           
           // Call ProcessMeasurement(meas_package) for Kalman filter
-          fusionEKF.ProcessMeasurement(meas_package);       
+          try{
+          fusionEKF.ProcessMeasurement(meas_package);     }  
+          catch(std::bad_alloc e)
+          {
+            std::cerr << "lu_solver() bad_alloc: " << e.what() << std::endl;
+            // cerr << "Dim=" << Dim << endl;
+            return;
+          }
 
           // Push the current estimated x,y positon from the Kalman filter's 
           //   state vector

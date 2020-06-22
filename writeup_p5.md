@@ -1,19 +1,16 @@
-# **Behavioral Cloning** 
+# **Extended Kalman filter project** 
 
-## Writeup Template
+## Writeup of Project
 
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+### This writeup is written while doing the project. I think it's helpful to clear up the mind
 
 ---
 
-**Behavioral Cloning Project**
+**Extended kalman filter Project**
 
 The goals / steps of this project are the following:
-* Use the simulator to collect data of good driving behavior
-* Build, a convolution neural network in Keras that predicts steering angles from images
-* Train and validate the model with a training and validation set
-* Test that the model successfully drives around track one without leaving the road
-* Summarize the results with a written report
+* 1. complement the TO-DO code
+* 2. predict the car position with KF and EKF
 
 
 [//]: # (Image References)
@@ -21,10 +18,7 @@ The goals / steps of this project are the following:
 [image1]: ./output/case2open.png "case: in open area"
 [image2]: ./output/case1brige.png "case: on brige"
 [image3]: ./output/center_demo.jpg "center image"
-[image4]: ./output/right_recovery.jpg  "right Recovery Image"
-[image5]: ./output/left_recovery.jpg  "left Recovery Image"
-[image6]: ./output/center_recovery.jpg  "center Recovery Image"
-[image7]: ./output/success2.png "loss trend"
+
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  

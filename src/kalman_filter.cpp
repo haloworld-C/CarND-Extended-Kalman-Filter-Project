@@ -1,5 +1,9 @@
 #include "kalman_filter.h"
+#include "tools.h"
+#include<math.h>
+#include<iostream>
 
+using std::cout;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -35,16 +39,17 @@ void KalmanFilter::Update(const VectorXd &z) {
   /**
    * TODO: update the state by using Kalman Filter equations
    */
-  MatrixXd y_ = H_ * x_;
+  // by haloworld
+  y_ = z - H_ * x_;
   
-  MatrixXd H_t = H_.transpose();
-  MatrixXd S_ = H_ * P_ * H_t + R_;
-  MatrixXd S_i = S_.inverse();
-  MatrixXd K_ = P_ * H_t * S_i;
-  MatrixXd KH = K_ * H_;
-  int r = KH.rows();
-  int c = KH.cols();
-  MatrixXd I_ = MatrixXd::Identity(c, r);
+  H_t = H_.transpose();
+  S_ = H_ * P_ * H_t + R_;
+  S_i = S_.inverse();
+  K_ = P_ * H_t * S_i;
+  KH = K_ * H_;
+  // int r = KH.rows();
+  // int c = KH.cols();
+  I_ = MatrixXd::Identity(4, 4);
   x_ = x_ + K_ * y_;
   P_ = (I_ - KH) * P_;
 
@@ -54,4 +59,20 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /**
    * TODO: update the state by using Extended Kalman Filter equations
    */
+    //calculator taylor linear
+	Tools tools;
+	MatrixXd H_L = tools.CalculateJacobian(x_);
+	// caculator EKF update
+	VectorXd y_ = z - H_L * x_;
+
+	H_lt = H_lt.transpose();
+  S_ = H_ * P_ * H_lt + R_;
+  S_i = S_.inverse();
+  K_ = P_ * H_lt * S_i;
+  KH = K_ * H_lt;
+  // int r = KH.rows();
+  // int c = KH.cols();
+  I_ = MatrixXd::Identity(4, 4);
+  x_ = x_ + K_ * y_;
+  P_ = (I_ - KH) * P_;
 }
