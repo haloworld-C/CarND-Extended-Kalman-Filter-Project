@@ -1,9 +1,7 @@
 #include "kalman_filter.h"
 #include "tools.h"
 #include<math.h>
-#include<iostream>
 
-using std::cout;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -40,16 +38,15 @@ void KalmanFilter::Update(const VectorXd &z) {
    * TODO: update the state by using Kalman Filter equations
    */
   // by haloworld
-  y_ = z - H_ * x_;
+  VectorXd y_ = z - H_ * x_;
   
-  H_t = H_.transpose();
-  S_ = H_ * P_ * H_t + R_;
-  S_i = S_.inverse();
-  K_ = P_ * H_t * S_i;
-  KH = K_ * H_;
-  // int r = KH.rows();
-  // int c = KH.cols();
-  I_ = MatrixXd::Identity(4, 4);
+  MatrixXd H_t = H_.transpose();
+  MatrixXd S_ = H_ * P_ * H_t + R_;
+  MatrixXd S_i = S_.inverse();
+  MatrixXd K_ = P_ * H_t * S_i;
+  MatrixXd KH = K_ * H_;
+
+  MatrixXd I_ = MatrixXd::Identity(4, 4);
   x_ = x_ + K_ * y_;
   P_ = (I_ - KH) * P_;
 
@@ -61,18 +58,33 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
    */
     //calculator taylor linear
 	Tools tools;
-	MatrixXd H_L = tools.CalculateJacobian(x_);
+	H_j = tools.CalculateJacobian(x_);
+  // transfer xy axis coordinate to polar coordinate
+  float rho = sqrt(x_[0]*x_[0] + x_[1]*x_[1]);
+  float theta = atan2(x_[1],x_[0]);
+  float rho_dot = 0;
+  if(fabs(rho) > 0.0001){
+    rho_dot = (x_[0]*x_[2] + x_[1]*x_[3])/rho;
+  }
 	// caculator EKF update
-	VectorXd y_ = z - H_L * x_;
+  VectorXd Hx(3);
+  Hx << rho, theta, rho_dot;
+	VectorXd y_ = z - Hx;
 
-	H_lt = H_lt.transpose();
-  S_ = H_ * P_ * H_lt + R_;
-  S_i = S_.inverse();
-  K_ = P_ * H_lt * S_i;
-  KH = K_ * H_lt;
-  // int r = KH.rows();
-  // int c = KH.cols();
-  I_ = MatrixXd::Identity(4, 4);
+  if(y_[1] > M_PI){
+    y_[1] -= 2*M_PI;
+  }
+  if(y_[1] < -M_PI){
+    y_[1] += 2*M_PI;
+  }
+
+	MatrixXd H_jt = H_j.transpose();
+  MatrixXd S_ = H_j * P_ * H_jt + R_;
+  MatrixXd S_i = S_.inverse();
+  MatrixXd K_ = P_ * H_jt * S_i;
+  MatrixXd KH = K_ * H_j;
+
+  MatrixXd I_ = MatrixXd::Identity(4, 4);
   x_ = x_ + K_ * y_;
   P_ = (I_ - KH) * P_;
 }

@@ -81,13 +81,13 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       //         and initialize state.
       float rho = measurement_pack.raw_measurements_[0];
       float theta = measurement_pack.raw_measurements_[1];
-      float rho_dot = measurement_pack.raw_measurements_[2];
+      // float rho_dot = measurement_pack.raw_measurements_[2];
 
       ekf_.x_[0] = rho * cos(theta);
       ekf_.x_[1] = rho * sin(theta);
       // why not set velocity
-      ekf_.x_[2] = rho_dot * cos(theta);
-      ekf_.x_[3] = rho_dot * sin(theta);
+      // ekf_.x_[2] = rho_dot * cos(theta);
+      // ekf_.x_[3] = rho_dot * sin(theta);
 
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
@@ -119,6 +119,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
    */
   float delta_t = (measurement_pack.timestamp_ - this->previous_timestamp_)/ 1000000.0; //caculate delta_t and transfered in second
+  previous_timestamp_ = measurement_pack.timestamp_;
   //initial ekf matrix
   float dt_2 = delta_t * delta_t;
   float dt_3 = dt_2 * delta_t;
